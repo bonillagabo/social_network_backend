@@ -1,9 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
 from .models import User
 from .serializers import UserSerializer
-
 from .helpers.encrypt_password import hash_md5
 
 
@@ -37,4 +35,4 @@ def getUser(request, username):
         serializer = UserSerializer(user, many=False)
         return Response(serializer.data)
     except User.DoesNotExist:
-        return Response(data={"The user does not exists"},status=400)
+        return Response(data={"The user does not exists"}, status=400)

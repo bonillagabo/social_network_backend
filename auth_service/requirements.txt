@@ -1,0 +1,4 @@
+flask
+pyjwt
+Flask-SQLAlchemy
+psycopg2-binary

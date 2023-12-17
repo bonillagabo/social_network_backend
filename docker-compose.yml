@@ -22,3 +22,18 @@ services:
       - "8000:8000"
     depends_on:
       - users_db
+
+  auth_service:
+    build:
+      context: ./auth_service
+    container_name: auth
+    command: bash -c "python -m flask --app auth run --host=0.0.0.0 -p 8001"
+    volumes:
+      - ./auth_service:/app
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: postgresql://root:root@users_db/users
+      SECRET_KEY: secret_key
+    depends_on:
+      - users_db
