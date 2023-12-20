@@ -10,6 +10,8 @@ services:
       POSTGRES_PASSWORD: root
     ports:
       - "5432:5432"
+    networks:
+      - microservices_network
 
   users_service:
     build: 
@@ -22,6 +24,8 @@ services:
       - "8000:8000"
     depends_on:
       - users_db
+    networks:
+      - microservices_network
 
   auth_service:
     build:
@@ -37,3 +41,9 @@ services:
       SECRET_KEY: secret_key
     depends_on:
       - users_db
+    networks:
+      - microservices_network
+
+networks:
+  microservices_network:
+    driver: bridge

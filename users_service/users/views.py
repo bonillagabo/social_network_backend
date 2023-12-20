@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from .models import User
 from .serializers import UserSerializer
 from .helpers.encrypt_password import hash_md5
+from .decorators import validate_jwt
 
 
 @api_view(["POST"])
@@ -29,6 +30,7 @@ def createUser(request):
 
 
 @api_view(["GET"])
+@validate_jwt
 def getUser(request, username):
     try:
         user = User.objects.get(username=username)
