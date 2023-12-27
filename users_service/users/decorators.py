@@ -16,7 +16,6 @@ def validate_jwt(view_func):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        # Verificar el token con el servicio externo
         try:
             response = requests.post(
                 "http://auth:8001/validate_token", json={"token": token}
@@ -38,7 +37,6 @@ def validate_jwt(view_func):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-        # Puedes pasar datos_usuario a la vista si es necesario
         return view_func(*args, **kwargs)
 
     return wrapped_view

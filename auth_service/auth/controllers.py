@@ -4,8 +4,6 @@ from auth.models import User
 from datetime import datetime, timedelta
 from auth import app
 
-revoked_tokens = set()
-
 
 def login(email_request, password_request):
     user = (User.query.filter(User.email == email_request).first()).as_dict()
@@ -26,9 +24,6 @@ def login(email_request, password_request):
 
 
 def validate_token(token):
-    if token in revoked_tokens:
-        return jsonify({"error": "Token has been revoked"}), 401
-
     try:
         payload = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
         email = payload.get("email")

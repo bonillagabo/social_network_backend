@@ -1,5 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import serializers
 from .models import User
 from .serializers import UserSerializer
 from .helpers.encrypt_password import hash_md5
@@ -15,18 +16,20 @@ def createUser(request):
         pass
 
     serializer = UserSerializer(data=request.data)
-    if not serializer.is_valid():
+    try:
+        serializer.is_valid(raise_exception=True)
+    except serializers.ValidationError as e:
+        for field, error_message in e.detail.items():
+            error_message = str(error_message[0])
+            if (
+                error_message == "user with this username already exists."
+                or error_message == "user with this email already exists."
+            ):
+                return Response(status=400, data="Email or Username is alredy in use")
         return Response(status=400, data="Invalids fields")
 
-    request_email = request.data.get("email")
-    email_exists = User.objects.filter(email=request_email).exists()
-    request_username = request.data.get("username")
-    username_exists = User.objects.filter(username=request_username).exists()
-    if not username_exists and not email_exists:
-        serializer.save()
-        return Response(status=200, data="User registered")
-
-    return Response(status=400, data="Email or Username is alredy in use")
+    serializer.save()
+    return Response(status=200, data="User registered")
 
 
 @api_view(["GET"])
